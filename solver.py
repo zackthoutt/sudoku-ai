@@ -1,6 +1,10 @@
 
 from sudoku import *
 
+def cross(A, B):
+    """Cross product of elements in A and elements in B """
+    return [x+y for x in A for y in B]
+
 
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]

@@ -1,126 +1,81 @@
+class Sudoku():
+    """A sudoku puzzle"""
+    rows = 'ABCDEFGHI'
+    cols = '123456789'
+
+    def __init__(self, initial_grid):
+        self.boxes = [r + c for r in self.rows for c in self.cols]
+
+        self.initial_grid = initial_grid
+        self.grid = initial_grid
+        self.values = self.grid_to_values(initial_grid)
+
+    def values_to_grid(self, values=None):
+        """ Convert the dictionary board representation to as string
+            Args:
+                - values (dict): boxes map to their values strings (i.e. 'A1' => '135')
+            Returns:
+                - grid (str): string representing the sudoku grid
+                  Ex. '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+        """
+        if values is None:
+            values = self.values
+
+        res = []
+        for r in self.rows:
+            for c in self.cols:
+                v = values[r + c]
+                res.append(v if len(v) == 1 else '.')
+        return ''.join(res)
+
+    def grid_to_values(self, grid=None):
+        """ Convert grid into a dict of {square: char} with '123456789' for empties.
+            Args:
+                - grid (str): string representing the sudoku grid
+                  Ex. '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
+            Returns:
+                - values (dict): boxes map to their values strings (i.e. 'A1' => '135')
+                                 Empty values will be set to '123456789'
+        """
+        if grid is None:
+            grid = self.grid
+
+        sudoku_grid = {}
+        for val, key in zip(grid, self.boxes):
+            if val == '.':
+                sudoku_grid[key] = '123456789'
+            else:
+                sudoku_grid[key] = val
+        return sudoku_grid
+
+    def remove_digit(self, box, digit):
+        """ Remove a digit from the possible values of a box
+            Args:
+                - box (str): the box to remove the digit from
+                - digit (str): the digit to remove from the box
+            Returns:
+                - values (dict): updated values dict with the digit removed from the box
+        """
+        self.values[box] = self.values[box].replace(digit, '')
+
+    def display(self, values=None):
+        """ Display the values as a 2-D grid.
+            Args:
+                - values (dict): boxes map to their values strings (i.e. 'A1' => '135')
+        """
+        if values is None:
+            values = self.values
+
+        width = 1+max(len(values[s]) for s in self.boxes)
+        line = '+'.join(['-'*(width*3)]*3)
+        for r in self.rows:
+            print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
+                          for c in self.cols))
+            if r in 'CF': print(line)
+        print()
 
 
-rows = 'ABCDEFGHI'
-cols = '123456789'
-boxes = [r + c for r in rows for c in cols]
-history = {}  # history must be declared here so that it exists in the assign_values scope
-
-def assign_value(values, box, value):
-    """You must use this function to update your values dictionary if you want to
-    try using the provided visualization tool. This function records each assignment
-    (in order) for later reconstruction.
-
-    Parameters
-    ----------
-    values(dict)
-        a dictionary of the form {'box_name': '123456789', ...}
-
-    Returns
-    -------
-    dict
-        The values dictionary with the naked twins eliminated from peers
-    """
-    # Don't waste memory appending actions that don't actually change any values
-    if values[box] == value:
-        return values
-
-    prev = values2grid(values)
-    values[box] = value
-    if len(value) == 1:
-        history[values2grid(values)] = (prev, (box, value))
-    return values
-
-def cross(A, B):
-    """Cross product of elements in A and elements in B """
-    return [x+y for x in A for y in B]
-
-
-def values2grid(values):
-    """Convert the dictionary board representation to as string
-
-    Parameters
-    ----------
-    values(dict)
-        a dictionary of the form {'box_name': '123456789', ...}
-
-    Returns
-    -------
-    a string representing a sudoku grid.
-        
-        Ex. '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    """
-    res = []
-    for r in rows:
-        for c in cols:
-            v = values[r + c]
-            res.append(v if len(v) == 1 else '.')
-    return ''.join(res)
-
-
-def grid2values(grid):
-    """Convert grid into a dict of {square: char} with '123456789' for empties.
-
-    Parameters
-    ----------
-    grid(string)
-        a string representing a sudoku grid.
-        
-        Ex. '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    
-    Returns
-    -------
-        A grid in dictionary form
-            Keys: The boxes, e.g., 'A1'
-            Values: The value in each box, e.g., '8'. If the box has no value,
-            then the value will be '123456789'.
-    """
-    sudoku_grid = {}
-    for val, key in zip(grid, boxes):
-        if val == '.':
-            sudoku_grid[key] = '123456789'
-        else:
-            sudoku_grid[key] = val
-    return sudoku_grid
-
-
-def display(values):
-    """Display the values as a 2-D grid.
-
-    Parameters
-    ----------
-        values(dict): The sudoku in dictionary form
-    """
-    width = 1+max(len(values[s]) for s in boxes)
-    line = '+'.join(['-'*(width*3)]*3)
-    for r in rows:
-        print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
-                      for c in cols))
-        if r in 'CF': print(line)
-    print()
-
-
-def reconstruct(values, history):
-    """Returns the solution as a sequence of value assignments 
-
-    Parameters
-    ----------
-    values(dict)
-        a dictionary of the form {'box_name': '123456789', ...}
-
-    history(dict)
-        a dictionary of the form {key: (key, (box, value))} encoding a linked
-        list where each element points to the parent and identifies the value
-        assignment that connects from the parent to the current state
-
-    Returns
-    -------
-    list
-        a list of (box, value) assignments that can be applied in order to the
-        starting Sudoku puzzle to reach the solution
-    """
-    path = []
-    prev = values2grid(values)
-    while prev in history:
-        prev, step = history[prev]
-        path.append(step)
-    return path[::-1]
+s = Sudoku('2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3')
+s.display()
+s.remove_digit('A2', '1')
+s.display()
