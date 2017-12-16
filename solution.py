@@ -51,7 +51,20 @@ def naked_twins(values):
                     continue
                 for reduce_peer in unit:
                     for digit in value:
-                        values[reduce_peer].replace(digit, '')
+                        values = remove_digit(values, reduce_peer, digit)
+    return values
+
+
+def remove_digit(values, box, digit):
+    """ Remove a digit from the possible values of a box
+        Args:
+            - values (dict): boxes map to their values strings (i.e. 'A1' => '135')
+            - box (str): the box to remove the digit from
+            - digit (str): the digit to remove from the box
+        Returns:
+            - values (dict): updated values dict with the digit removed from the box
+    """
+    values[box] = values[box].replace(digit, '')
     return values
 
 
@@ -74,7 +87,7 @@ def eliminate(values):
     for box, value in values.items():
         if len(value) == 1:
             for peer in peers[box]:
-                values[peer] = values[peer].replace(value, '')
+                values = remove_digit(values, peer, value)
     return values
 
 
