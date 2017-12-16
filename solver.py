@@ -1,5 +1,5 @@
 
-from utils import *
+from sudoku import *
 
 
 row_units = [cross(r, cols) for r in rows]
@@ -202,18 +202,3 @@ def solve(grid):
     values = search(values)
     return values
 
-
-if __name__ == "__main__":
-    diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    display(grid2values(diag_sudoku_grid))
-    result = solve(diag_sudoku_grid)
-    display(result)
-
-    try:
-        import PySudoku
-        PySudoku.play(grid2values(diag_sudoku_grid), result, history)
-
-    except SystemExit:
-        pass
-    except:
-        print('We could not visualize your board due to a pygame issue. Not a problem! It is not a requirement.')
