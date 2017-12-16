@@ -126,3 +126,11 @@ class Sudoku():
         if not fully_reduced:
             return False
 
+        for unit in self.unitlist:
+            required_digits = '123456789'
+            for box in unit:
+                required_digits = required_digits.replace(self.values[box], '')
+            if len(required_digits) != 0:
+                return False
+        return True
+
