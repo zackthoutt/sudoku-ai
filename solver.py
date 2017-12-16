@@ -6,33 +6,16 @@ class SudokuSolver():
     rows = 'ABCDEFGHI'
     cols = '123456789'
 
-    def configure_solver(self, game_type):
+    def configure_solver(self, puzzle):
         """ Build helpful attributes about the sudoku puzzle for a given type of rules.
 
             Args:
-                - game_type (str): the type of game to define rules
+                - puzzle (obj): the instance of a Sudoku we are trying to solve
         """
-        self.boxes = [r + c for r in self.rows for c in self.cols]
-        self.row_units = [self.cross(r, self.cols) for r in self.rows]
-        self.column_units = [self.cross(self.rows, c) for c in self.cols]
-        self.square_units = [self.cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
-        self.diagonal_units = []
-        self.unitlist = self.row_units + self.column_units + self.square_units
-
-        if game_type == 'standard+diagonal':
-            self.diagonal_units = [
-                [self.rows[position] + self.cols[position] for position in range(0, len(self.rows))],
-                [self.rows[position] + self.cols[-(position + 1)] for position in range(0, len(self.rows))]
-            ]
-            self.unitlist += self.diagonal_units
-
-        self.units = dict((s, [u for u in self.unitlist if s in u]) for s in self.boxes)
-        self.peers = dict((s, set(sum(self.units[s],[]))-set([s])) for s in self.boxes)
-
-    @staticmethod
-    def cross(A, B):
-        """Cross product of elements in A and elements in B """
-        return [x+y for x in A for y in B]
+        self.boxes = puzzle.boxes
+        self.unitlist = puzzle.unitlist
+        self.units = puzzle.units
+        self.peers = puzzle.peers
 
     def naked_twins(self, values):
         """ Eliminate values using the naked twins strategy.
@@ -194,18 +177,13 @@ class SudokuSolver():
         if not isinstance(puzzle, Sudoku):
             raise Exception("The puzzle needs to be an instance of Sudoku")
 
-        self.configure_solver(puzzle.game_type)
+        self.configure_solver(puzzle)
         puzzle.values = self.search(puzzle.values)
 
         if puzzle.is_solved():
             print("The puzzle was solved!")
-            if display_solution:
-                puzzle.display()
+        else:
+            print("The solver failed :(")
 
-
-puzzle = Sudoku('2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3', game_type='standard+diagonal')
-puzzle.display()
-solver = SudokuSolver()
-solver.solve(puzzle)
-
-
+        if display_solution:
+            puzzle.display()
