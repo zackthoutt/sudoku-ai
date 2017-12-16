@@ -41,7 +41,18 @@ def naked_twins(values):
     and because it is simpler (since the reduce_puzzle function already calls this
     strategy repeatedly).
     """
+    for box, value in values.items():
+        if len(value) != 2:
+            continue
 
+        for unit in units[box]:
+            for peer in unit:
+                if values[peer] != value:
+                    continue
+                for reduce_peer in unit:
+                    for digit in value:
+                        values[reduce_peer].replace(digit, '')
+    return values
 
 
 def eliminate(values):
