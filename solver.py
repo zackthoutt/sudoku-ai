@@ -181,9 +181,10 @@ class SudokuSolver():
         puzzle.values = self.search(puzzle.values)
 
         if puzzle.is_solved():
-            print("The puzzle was solved!")
+            message = "The puzzle was solved!"
         else:
-            print("The solver failed :(")
+            message = "The solver failed :("
 
         if display_solution:
+            print(message)
             puzzle.display()

@@ -14,6 +14,8 @@ class Sudoku():
                         1. 'standard': use the normal rules of 1-9 appearing exactly once in each row, col, and square
                         2. 'standard+diagonal': use the 'standard' rules above and also require 1-9 to appear exactly once in each diagonal
         """
+        if len(initial_grid) != 81:
+            raise Exception("Grid must be 81 characters")
         self.build_puzzle(game_type)
         self.game_type = game_type
         self.initial_grid = initial_grid
