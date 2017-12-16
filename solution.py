@@ -15,44 +15,46 @@ peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
 
 
 def naked_twins(values):
-    """Eliminate values using the naked twins strategy.
-
-    Parameters
-    ----------
-    values(dict)
-        a dictionary of the form {'box_name': '123456789', ...}
-
-    Returns
-    -------
-    dict
-        The values dictionary with the naked twins eliminated from peers
-
-    Notes
-    -----
-    Your solution can either process all pairs of naked twins from the input once,
-    or it can continue processing pairs of naked twins until there are no such
-    pairs remaining -- the project assistant test suite will accept either
-    convention. However, it will not accept code that does not process all pairs
-    of naked twins from the original input. (For example, if you start processing
-    pairs of twins and eliminate another pair of twins before the second pair
-    is processed then your code will fail the PA test suite.)
-
-    The first convention is preferred for consistency with the other strategies,
-    and because it is simpler (since the reduce_puzzle function already calls this
-    strategy repeatedly).
+    """ Eliminate values using the naked twins strategy.
+        Args:
+            - values (dict): boxes map to their values strings (i.e. 'A1' => '135')
+        Returns:
+            - values (dict): the values dict with naked twins eliminated
     """
-    for box, value in values.items():
-        if len(value) != 2:
-            continue
-
-        for unit in units[box]:
-            for peer in unit:
-                if values[peer] != value:
-                    continue
-                for reduce_peer in unit:
-                    for digit in value:
-                        values = remove_digit(values, reduce_peer, digit)
+    for unit in unitlist:
+        twin_values = find_twins(values, unit)
+        values = eliminate_twin_values(values, unit, twin_values)
     return values
+
+
+def eliminate_twin_values(values, unit, twin_values):
+    """ Remove the twin values from a unit
+        Args:
+            - values (dict): boxes map to their values strings (i.e. 'A1' => '135')
+            - unit (list): list of boxes in a unit
+            - twin_values (list): list of twin values to eliminate from unit
+        Returns:
+            - values (dict): updated values dict with twins eliminated from the unit
+    """
+    for box in unit:
+        if values[box] in twin_values:
+            continue
+        for twin in twin_values:
+            for digit in twin:
+                values = remove_digit(values, box, digit)
+    return values
+
+
+def find_twins(values, unit):
+    """ Find the current twins for a unit (row, column, etc.)
+        Args:
+            - values (dict): boxes map to their values strings (i.e. 'A1' => '135')
+            - unit (list): list of boxes in a unit
+        Returns:
+            - twin_values (list): the values that are length two and occur exactly twice in the unit
+    """
+    unit_values = [values[box] for box in unit]
+    return [value for value in unit_values if unit_values.count(value) == 2 and len(value) == 2]
 
 
 def remove_digit(values, box, digit):
