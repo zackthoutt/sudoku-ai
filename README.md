@@ -1,80 +1,61 @@
-# Solve Sudoku with AI
+# Sudoko AI
 
-## Synopsis
+Once you start training machine learning models, it's easy to forget that not all AI needs to use a model trained on a GPU. Training neural networks to solve difficult problems is really cool, but I think it's become common for people to over-engineer simple problems. This repository is a good example of an AI that requires zero training data and can solve the puzzles quickly and with 100% accuracy. 
 
-In this project, students will extend the Sudoku-solving agent developed in the classroom lectures to solve _diagonal_ Sudoku puzzles. A diagonal Sudoku puzzle is identical to traditional Sudoku puzzles with the added constraint that the boxes on the two main diagonals of the board must also contain the digits 1-9 in each cell (just like the rows, columns, and 3x3 blocks).
+### What is Sudoku
 
-## Instructions
+Sudoku was created in 1979 by Howard Garns, a semi-retired puzzle creator from Indiana. The earlist predecessor to Sudoku was a game called Numbers, which appeared in French newspapers throughout the 1800s. While similar to Sudoku, Numbers involved arithmatic instead of logic to solve and there were sometimes double-digit numbers. 
 
-Follow the instructions in the classroom lesson to install and configure the AIND [Anaconda](https://www.continuum.io/downloads) environment. That environment includes several important packages that are used for the project. 
+Unfortunately, Howard Garns died before his invention took off. In the mid-late 1980s a Japenese newspaper started publishing the puzzle regularly and Maki Kaji gave it the name Sudoku. It wasn't until the late 1990s and early 2000s that Sudoku made its way back to the States and spread throughout the rest of the world.
 
-**YOU ONLY NEED TO WRITE CODE IN `solution.py`.**
+### How do you play
 
+Sudoku is played on a 9x9 grid which is also separated into 9 3x3 sections. The objective of the game is to figure out how to put the digits 1-9 on the grid so that each digit appears exactly once in each row, column, and 3x3 section. The game will start off with a handful of squared filled out; these are locked in. In general, the fewer sections that start off filled, the more difficult the game is. Of course, there is a critical point whereby once you get down to too few squares filled out there becomes many correct solutions and the game becomes easier again. 
 
-## Quickstart Guide
+![Sudoku](/assets/sudoku.png)
 
-### Activate the aind environment (OS X or Unix/Linux)
-    
-    `$ source activate aind`
+### Using this repository
 
-### Activate the aind environment (Windows)
+Feel free to use this repository however you like, whether you want to use it to learn, for a Sudoku app, or to solve a pesky Sudoku puzzle you're stuck on. Using the code is pretty simple. 
 
-    `> activate aind`
+First, you'll need to translate the Sudoku puzzle you're interested in solving into a one-dimensional string where empty squares are represented by a ".". You'll read the Sudoku puzzle left-to-right and down the page like a book to get it into the proper grid format.
 
-### Run the code & visualization
+```
+grid = '8..........36......7..9.2...5...7.......457.....1...3...1....68..85...1..9....4..'
+```
 
-    `(aind)$ python solution.py`
+Next, you'll create a Sudoku puzzle with the grid string by instantiating a Sudoku object.
 
-### Run the local test suite
+```
+puzzle = Sudoku(grid)
+```
 
-    `(aind)$ python -m unittest -v`
+The solver AI can be instantiated in the same way and can be used to solve multiple Sudoku puzzles.
 
-### Run the remote test suite & submit the project
+```
+solver = SudokuSolver()
+```
 
-    `(aind)$ udacity submit`
+Finally, pass the puzzle into the Sudoku AI. It should print the solution to sdout.
 
+```
+solver.solve(puzzle)
+```
 
-## Coding
+For more examples and use cases, check out the tests file.
 
-You must complete the required functions in the 'solution.py' file (copy in code from the classroom where indicated, and add or extend with new code as described below). The `test_solution.py` file includes a few unit tests for local testing (See the unittest module for information on getting started.), but the primary mechanism for testing your code is the Udacity Project Assistant command line utility described in the next section.
+# Connect with me
 
-YOU SHOULD EXPECT TO MODIFY OR WRITE YOUR OWN UNIT TESTS AS PART OF COMPLETING THIS PROJECT. The Project Assistant test suite is not shared with students. Writing your own tests leads to a deeper understanding of the project.
+If you'd like to collaborate on a project, learn more about me, or just say hi, feel free to contact me using any of the social channels listed below.
 
-1. Run the following command from inside the project folder in your terminal to verify that your system is properly configured for the project. You should see feedback in the terminal about failed test cases -- which makes sense because you haven't implemented any code yet. You will reuse this command later to execute your **local** test cases.
-
-    `$ python -m unittest -v`
-
-1. Run the following command from inside the project folder in your terminal to verify that the Udacity-PA tool is installed properly. You should see a list of failed test cases -- which is good because you haven't implemented any code yet. You will reuse this command later to execute the **remote** test cases and complete the project.
-
-    `$ udacity submit`
-
-1. Add the two new diagonal units to the `unitlist` at the top of solution.py. Re-run the local tests with `python -m unittest` to confirm your solution. 
-
-1. Copy your code from the classroom for the `eliminate()`, `only_choice()`, `reduce_puzzle()`, and `search()` into the corresponding functions in the `solution.py` file.
-
-1. Implement the `naked_twins()` function, and update `reduce_puzzle()` to call it (along with the other existing strategies). Re-run the local tests with `python -m unittest -v` to confirm your solution.
-
-1. Write your own test cases to further test your code. Re-run the remote tests with `udacity submit` to confirm your solution. If any of the remote test cases fail, use the feedback to write new local test cases that you can use for debugging.
-
-
-## Submission
-
-To submit your code, run `udacity submit` from a terminal in the top-level directory of this project. You will be prompted for a username and password the first time the script is run. If you login using google or facebook, visit [this link](https://project-assistant.udacity.com/auth_tokens/jwt_login) for alternate login instructions.
-
-The Udacity-PA CLI tool is automatically installed with the AIND conda environment provided in the classroom, but you can also install it manually by running `pip install udacity-pa`. You can submit your code for scoring by running `udacity submit`. The project assistant server has a collection of unit tests that it will execute on your code, and it will provide feedback on any successes or failures. You must pass all test cases in the project assistant to pass the project.
-
-When your project passes all test cases on the Project Assistant, you will automatically receive credit for the project in the classroom. (Unlike other projects, this one does not require any manual submission in the classroom to complete.)
-
-
-## Troubleshooting
-
-Your classroom mentor may be able to provide some guidance on the project, but the [discussion forums](https://discussions.udacity.com/c/nd889-intro-sudoku) or [slack team](https://ai-nd.slack.com) (especially the #p-sudoku channel) should be your primary support resources. The instructors hold regularly scheduled office hours in the Slack community. (The schedule is posted in the description of the #office-hours channel.)
-
-Contact ai-support@udacity.com if you don't have access to the forums or Slack team.
-
-
-## Visualization
-
-**Note:** The `pygame` library is required to visualize your solution -- however, the `pygame` module can be troublesome to install and configure. It should be installed by default with the AIND conda environment, but it is not reliable across all operating systems or versions. Please refer to the pygame documentation [here](http://www.pygame.org/download.shtml), or discuss among your peers in the slack group or discussion forum if you need help.
-
-Running `python solution.py` will automatically attempt to visualize your solution, but you mustuse the provided `assign_value` function (defined in `utils.py`) to track the puzzle solution progress for reconstruction during visuzalization.
+- [Personal Website](https://zackthoutt.com)
+- [Email](mailto:zackarey.thoutt@colorado.edu)
+- [LinkedIn](https://www.linkedin.com/in/zack-thoutt-57275655/)
+- [Twitter](https://twitter.com/zthoutt)
+- [Medium](https://medium.com/@zthoutt)
+- [Quora](https://www.quora.com/profile/Zack-Thoutt)
+- [HackerNews](https://news.ycombinator.com/submitted?id=zthoutt)
+- [Reddit](https://www.reddit.com/user/zthoutt/)
+- [Kaggle](https://www.kaggle.com/zynicide)
+- [Instagram](https://www.instagram.com/zthoutt/)
+- [500px](https://500px.com/zthoutt)
